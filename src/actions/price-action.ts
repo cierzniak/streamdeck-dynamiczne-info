@@ -108,7 +108,8 @@ export abstract class PriceAction extends SingletonAction<PriceSettings> {
 				await this.#sendItems("getOperators", () => this.#deps.catalog.operators());
 				break;
 			case "getTariffs":
-				await this.#sendTariffs((await ev.action.getSettings()).operator);
+				// Read from the tile, not from Stream Deck: that round trip can time out and reject.
+				await this.#sendTariffs(this.#tiles.get(ev.action.id)?.settings.operator);
 				break;
 		}
 	}

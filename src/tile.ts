@@ -55,7 +55,7 @@ export function renderTile(state: TileState): string {
 }
 
 export function toDataUrl(svg: string): string {
-	return `data:image/svg+xml;charset=utf8,${encodeURIComponent(svg)}`;
+	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
 function frame(colors: Colors, lines: string[]): string {

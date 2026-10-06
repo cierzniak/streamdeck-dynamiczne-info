@@ -46,6 +46,10 @@ export function createApi(fetchFn: typeof fetch = fetch, userAgent = "streamdeck
 
 		if (response.status === 404) {
 			const message = errorMessage(body);
+			if (message === "") {
+				// Not the API talking (a proxy with no route, mid-deploy): an outage, not a wrong tariff.
+				throw new ApiError("server", "HTTP 404");
+			}
 
 			// The server has no error codes; the missing-fixing message is the only one worth telling apart.
 			throw new ApiError(message.startsWith("No fixing") ? "no-fixing" : "unknown-tariff", message);

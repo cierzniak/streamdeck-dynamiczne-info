@@ -97,7 +97,7 @@ describe("toDataUrl", () => {
 	it("wraps the SVG in a data URL that decodes back", () => {
 		const svg = renderTile({ kind: "loading" });
 		const url = toDataUrl(svg);
-		const prefix = "data:image/svg+xml;charset=utf8,";
+		const prefix = "data:image/svg+xml,";
 
 		expect(url.startsWith(prefix)).toBe(true);
 		expect(decodeURIComponent(url.slice(prefix.length))).toBe(svg);

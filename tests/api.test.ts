@@ -114,6 +114,13 @@ describe("fetchOutlook", () => {
 		await expect(createApi(fakeFetch(200, html).fetchFn).fetchOutlook("energa", "g11")).rejects.toMatchObject({ kind: "server" });
 	});
 
+	it("treats a 404 without the API error body as a server error, not a wrong tariff", async () => {
+		const html = "<!doctype html><title>404 Not Found</title>";
+
+		await expect(createApi(fakeFetch(404, html).fetchFn).fetchOutlook("energa", "g11")).rejects.toMatchObject({ kind: "server" });
+		await expect(createApi(fakeFetch(404, { detail: "nope" }).fetchFn).fetchOutlook("energa", "g11")).rejects.toMatchObject({ kind: "server" });
+	});
+
 	it("treats a JSON body of the wrong shape as a server error", async () => {
 		await expect(createApi(fakeFetch(200, { data: [] }).fetchFn).fetchOutlook("energa", "g11")).rejects.toMatchObject({ kind: "server" });
 		await expect(createApi(fakeFetch(200, null).fetchFn).fetchOutlook("energa", "g11")).rejects.toMatchObject({ kind: "server" });
