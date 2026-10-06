@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ApiError } from "../src/api";
-import { MIN_REFRESH_GAP_MS, OutlookStore, POLL_MS, RETRY_MS } from "../src/outlook-store";
+import { MAX_RETRY_MS, MIN_REFRESH_GAP_MS, OutlookStore, POLL_MS, RETRY_MS } from "../src/outlook-store";
 import type { HourRow } from "../src/types";
 import { row } from "./helpers";
 
@@ -139,6 +139,21 @@ describe("OutlookStore", () => {
 		await vi.advanceTimersByTimeAsync(RETRY_MS);
 		expect(fetchOutlook).toHaveBeenCalledTimes(1);
 		await vi.advanceTimersByTimeAsync(60_000);
+		expect(fetchOutlook).toHaveBeenCalledTimes(2);
+	});
+
+	it("caps an absurd Retry-After at one hour", async () => {
+		const fetchOutlook = vi
+			.fn<(operator: string, tariff: string) => Promise<HourRow[]>>()
+			.mockRejectedValueOnce(new ApiError("rate-limited", "slow down", 10_000_000_000))
+			.mockResolvedValue(rows);
+		const store = new OutlookStore(fetchOutlook);
+		store.subscribe("energa", "g11", vi.fn());
+		await flush();
+
+		await vi.advanceTimersByTimeAsync(MAX_RETRY_MS - 1);
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+		await vi.advanceTimersByTimeAsync(1);
 		expect(fetchOutlook).toHaveBeenCalledTimes(2);
 	});
 

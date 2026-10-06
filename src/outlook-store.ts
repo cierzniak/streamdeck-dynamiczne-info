@@ -3,6 +3,7 @@ import type { HourRow } from "./types";
 
 export const POLL_MS = 300_000;
 export const RETRY_MS = 60_000;
+export const MAX_RETRY_MS = 3_600_000;
 export const MIN_REFRESH_GAP_MS = 10_000;
 
 const TRANSIENT: readonly ApiErrorKind[] = ["network", "server", "rate-limited"];
@@ -91,7 +92,9 @@ export class OutlookStore {
 
 			snapshot = { rows: entry.snapshot?.rows ?? [], error: error.kind };
 			if (TRANSIENT.includes(error.kind)) {
-				delay = Math.max(RETRY_MS, (error.retryAfterSeconds ?? 0) * 1000);
+				// Retry-After comes from the network: unbounded, it could park the key for good or
+				// overflow setTimeout into firing at once.
+				delay = Math.min(MAX_RETRY_MS, Math.max(RETRY_MS, (error.retryAfterSeconds ?? 0) * 1000));
 			}
 		}
 
