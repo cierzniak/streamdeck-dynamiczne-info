@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="pl">
+    <title>dynamiczne.info</title>
+    <meta charset="utf-8" />
+    <script src="sdpi-components.js"></script>
+</head>
+
+<body>
+    <sdpi-item label="Operator">
+        <sdpi-select setting="operator" datasource="getOperators" placeholder="Wybierz operatora" loading="Wczytywanie…"></sdpi-select>
+    </sdpi-item>
+    <sdpi-item label="Taryfa">
+        <sdpi-select setting="tariff" datasource="getTariffs" placeholder="Wybierz taryfę" loading="Wczytywanie…" hot-reload></sdpi-select>
+    </sdpi-item>
+</body>
+
+</html>

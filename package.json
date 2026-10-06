@@ -1,0 +1,34 @@
+{
+    "name": "streamdeck-dynamiczne-info",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Stream Deck plugin showing the current and next-hour electricity price from dynamiczne.info",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "build": "rollup -c",
+        "lint": "eslint . && tsc --noEmit",
+        "test": "vitest run",
+        "validate": "streamdeck validate info.dynamiczne.prices.sdPlugin",
+        "pack": "rm -rf dist && streamdeck pack info.dynamiczne.prices.sdPlugin --output dist"
+    },
+    "dependencies": {
+        "@elgato/streamdeck": "^3.0.1"
+    },
+    "devDependencies": {
+        "@elgato/cli": "^1.10.1",
+        "@eslint/js": "^9.39.4",
+        "@rollup/plugin-commonjs": "^29.0.2",
+        "@rollup/plugin-node-resolve": "^15.2.2",
+        "@rollup/plugin-terser": "^1.0.0",
+        "@rollup/plugin-typescript": "^12.1.0",
+        "@tsconfig/node20": "^20.1.2",
+        "@types/node": "~24.1.0",
+        "eslint": "^9.39.4",
+        "rollup": "^4.0.2",
+        "tslib": "^2.6.2",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.46.0",
+        "vitest": "^3.2.4"
+    }
+}
