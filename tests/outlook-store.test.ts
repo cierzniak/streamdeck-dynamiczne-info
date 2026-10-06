@@ -89,6 +89,79 @@ describe("OutlookStore", () => {
 		expect(fetchOutlook).toHaveBeenCalledTimes(2);
 	});
 
+	it("keeps the cache while nobody watches and resumes the original schedule on return", async () => {
+		const fetchOutlook = vi.fn(async () => rows);
+		const store = new OutlookStore(fetchOutlook);
+		const leave = store.subscribe("energa", "g11", vi.fn());
+		await flush();
+		leave();
+		await vi.advanceTimersByTimeAsync(10 * 60_000);
+		const back = vi.fn();
+
+		store.subscribe("energa", "g11", back);
+
+		expect(back).toHaveBeenCalledWith({ rows, error: null });
+		await flush();
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(POLL_MS - 10 * 60_000 - 1);
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+		await vi.advanceTimersByTimeAsync(1);
+		expect(fetchOutlook).toHaveBeenCalledTimes(2);
+	});
+
+	it("serves the cache and refetches at once when the return comes after the poll was due", async () => {
+		const fetchOutlook = vi.fn(async () => rows);
+		const store = new OutlookStore(fetchOutlook);
+		const leave = store.subscribe("energa", "g11", vi.fn());
+		await flush();
+		leave();
+		await vi.advanceTimersByTimeAsync(POLL_MS * 2);
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+		const back = vi.fn();
+
+		store.subscribe("energa", "g11", back);
+		expect(back).toHaveBeenCalledTimes(1);
+		await flush();
+
+		expect(fetchOutlook).toHaveBeenCalledTimes(2);
+		expect(back).toHaveBeenCalledTimes(2);
+	});
+
+	it("does not let leaving and returning cut a Retry-After short", async () => {
+		const fetchOutlook = vi
+			.fn<(operator: string, tariff: string) => Promise<HourRow[]>>()
+			.mockRejectedValueOnce(new ApiError("rate-limited", "slow down", 120))
+			.mockResolvedValue(rows);
+		const store = new OutlookStore(fetchOutlook);
+		const leave = store.subscribe("energa", "g11", vi.fn());
+		await flush();
+		leave();
+		await vi.advanceTimersByTimeAsync(10_000);
+
+		store.subscribe("energa", "g11", vi.fn());
+		await vi.advanceTimersByTimeAsync(109_999);
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+		await vi.advanceTimersByTimeAsync(1);
+		expect(fetchOutlook).toHaveBeenCalledTimes(2);
+	});
+
+	it("keeps the result of a request that finished after everyone left", async () => {
+		let resolve: (value: HourRow[]) => void = () => {};
+		const fetchOutlook = vi.fn(() => new Promise<HourRow[]>((done) => (resolve = done)));
+		const store = new OutlookStore(fetchOutlook);
+		const leave = store.subscribe("energa", "g11", vi.fn());
+		leave();
+		resolve(rows);
+		await flush();
+		const back = vi.fn();
+
+		store.subscribe("energa", "g11", back);
+
+		expect(back).toHaveBeenCalledWith({ rows, error: null });
+		expect(fetchOutlook).toHaveBeenCalledTimes(1);
+	});
+
 	it("keeps the last rows when a later request fails and retries after a minute", async () => {
 		const fetchOutlook = vi
 			.fn<(operator: string, tariff: string) => Promise<HourRow[]>>()
