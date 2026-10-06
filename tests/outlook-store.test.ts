@@ -60,7 +60,8 @@ describe("OutlookStore", () => {
 		expect(fetchOutlook).toHaveBeenCalledTimes(1);
 	});
 
-	it("polls every five minutes", async () => {
+	it("polls every thirty minutes", async () => {
+		expect(POLL_MS).toBe(30 * 60 * 1000);
 		const fetchOutlook = vi.fn(async () => rows);
 		const store = new OutlookStore(fetchOutlook);
 		store.subscribe("energa", "g11", vi.fn());

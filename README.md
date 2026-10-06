@@ -31,7 +31,7 @@ Naciśnięcie kafelka otwiera dynamiczne.info i odświeża dane.
 
 ## Jak to działa
 
-Plugin co 5 minut pobiera publiczne API serwisu (`/api/v1/outlook/{operator}/{taryfa}`) i o każdej pełnej
+Plugin co 30 minut pobiera publiczne API serwisu (`/api/v1/outlook/{operator}/{taryfa}`) i o każdej pełnej
 godzinie przełącza kafelki na kolejną godzinę. Jeśli połączenie zniknie, kafelek pokazuje cenę z ostatnich
 pobranych danych, dopóki obejmują one daną godzinę. Cena „za godzinę” tuż przed północą jest dostępna dopiero
 po publikacji jutrzejszego fixingu — do tego czasu kafelek pokazuje „—”.

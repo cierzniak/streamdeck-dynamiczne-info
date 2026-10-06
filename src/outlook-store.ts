@@ -1,7 +1,7 @@
 import { ApiError, type ApiErrorKind } from "./api";
 import type { HourRow } from "./types";
 
-export const POLL_MS = 300_000;
+export const POLL_MS = 1_800_000;
 export const RETRY_MS = 60_000;
 export const MAX_RETRY_MS = 3_600_000;
 export const MIN_REFRESH_GAP_MS = 10_000;
