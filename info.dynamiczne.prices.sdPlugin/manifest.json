@@ -10,9 +10,15 @@
 			"Icon": "imgs/actions/price/icon",
 			"Tooltip": "Cena prądu brutto w bieżącej godzinie",
 			"PropertyInspectorPath": "ui/price.html",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"UserTitleEnabled": false,
-			"States": [{ "Image": "imgs/actions/price/key" }]
+			"States": [
+				{
+					"Image": "imgs/actions/price/key"
+				}
+			]
 		},
 		{
 			"Name": "Cena za godzinę",
@@ -20,9 +26,15 @@
 			"Icon": "imgs/actions/price/icon",
 			"Tooltip": "Cena prądu brutto w następnej godzinie",
 			"PropertyInspectorPath": "ui/price.html",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"UserTitleEnabled": false,
-			"States": [{ "Image": "imgs/actions/price/key" }]
+			"States": [
+				{
+					"Image": "imgs/actions/price/key"
+				}
+			]
 		}
 	],
 	"Category": "dynamiczne.info",
@@ -31,12 +43,22 @@
 	"Description": "Godzinowa cena prądu brutto z dynamiczne.info: teraz i za godzinę, w kolorze porady.",
 	"Icon": "imgs/plugin/marketplace",
 	"SDKVersion": 3,
-	"Software": { "MinimumVersion": "7.1" },
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
 	"OS": [
-		{ "Platform": "mac", "MinimumVersion": "12" },
-		{ "Platform": "windows", "MinimumVersion": "10" }
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
 	],
-	"Nodejs": { "Version": "24" },
+	"Nodejs": {
+		"Version": "24"
+	},
 	"URL": "https://dynamiczne.info",
 	"UUID": "info.dynamiczne.prices"
 }
