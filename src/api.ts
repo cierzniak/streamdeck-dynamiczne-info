@@ -24,12 +24,22 @@ export type Api = {
 	fetchTariffs(operator: string): Promise<string[]>;
 };
 
-export function createApi(fetchFn: typeof fetch = fetch, userAgent = "streamdeck-dynamiczne-info"): Api {
+export function createApi(
+	fetchFn: typeof fetch = fetch,
+	userAgent = "streamdeck-dynamiczne-info",
+	token: () => string | undefined = () => undefined,
+): Api {
 	async function getData(path: string): Promise<unknown> {
+		const headers: Record<string, string> = { Accept: "application/json", "User-Agent": userAgent };
+		const key = token()?.trim();
+		if (key) {
+			headers.Authorization = `Bearer ${key}`;
+		}
+
 		let response: Response;
 		try {
 			response = await fetchFn(`${BASE_URL}${path}`, {
-				headers: { Accept: "application/json", "User-Agent": userAgent },
+				headers,
 				signal: AbortSignal.timeout(TIMEOUT_MS),
 			});
 		} catch (cause) {

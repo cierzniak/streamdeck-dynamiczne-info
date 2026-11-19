@@ -36,7 +36,9 @@ godzinie przełącza kafelki na kolejną godzinę. Jeśli połączenie zniknie, 
 pobranych danych, dopóki obejmują one daną godzinę. Cena „za godzinę” tuż przed północą jest dostępna dopiero
 po publikacji jutrzejszego fixingu — do tego czasu kafelek pokazuje „—”.
 
-Plugin nie zbiera żadnych danych i nie wymaga konta.
+Plugin nie zbiera żadnych danych i nie wymaga konta. Mieści się w limicie API bez klucza (10 zapytań na minutę
+z jednego adresu IP). Jeśli z tego samego adresu korzysta z API więcej urządzeń, wpisz w ustawieniach kafelka
+[bezpłatny klucz](https://dynamiczne.info/api/token) — jest wspólny dla wszystkich kafelków.
 
 ## Rozwój
 

@@ -8,7 +8,9 @@ import { msUntilNextHour } from "./hours";
 import { OutlookStore } from "./outlook-store";
 import { globalDefaults } from "./settings";
 
-const api = createApi(fetch, `streamdeck-dynamiczne-info/${streamDeck.info.plugin.version}`);
+// Requests before the global settings arrive go without the key: the anonymous limit still covers them.
+let token: string | undefined;
+const api = createApi(fetch, `streamdeck-dynamiczne-info/${streamDeck.info.plugin.version}`, () => token);
 const deps = {
 	store: new OutlookStore(api.fetchOutlook),
 	catalog: new Catalog(api),
@@ -46,5 +48,14 @@ for (const action of actions) {
 	streamDeck.actions.registerAction(action);
 }
 
+streamDeck.settings.onDidReceiveGlobalSettings<{ token?: string }>((ev) => {
+	token = ev.settings.token;
+});
+
 scheduleHourTick();
-streamDeck.connect();
+streamDeck
+	.connect()
+	.then(async () => {
+		token = (await streamDeck.settings.getGlobalSettings<{ token?: string }>()).token;
+	})
+	.catch((error: unknown) => streamDeck.logger.warn(`Could not read the API key: ${String(error)}`));
