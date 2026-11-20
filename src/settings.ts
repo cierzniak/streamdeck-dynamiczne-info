@@ -5,6 +5,7 @@ import type { PriceSettings } from "./types";
 type GlobalSettings = {
 	lastOperator?: string;
 	lastTariff?: string;
+	token?: string;
 };
 
 export type Defaults = {
@@ -25,6 +26,8 @@ export const globalDefaults: Defaults = {
 	},
 
 	async save({ operator, tariff }) {
-		await streamDeck.settings.setGlobalSettings<GlobalSettings>({ lastOperator: operator, lastTariff: tariff });
+		// setGlobalSettings replaces the whole object: keep the API key the settings panel stored.
+		const current = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
+		await streamDeck.settings.setGlobalSettings<GlobalSettings>({ ...current, lastOperator: operator, lastTariff: tariff });
 	},
 };

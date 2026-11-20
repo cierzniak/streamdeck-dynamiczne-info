@@ -39,6 +39,16 @@ describe("fetchOutlook", () => {
 		expect(init?.signal).toBeInstanceOf(AbortSignal);
 	});
 
+	it("sends the API key as a bearer token only when one is set", async () => {
+		const { fn, fetchFn } = fakeFetch(200, outlook);
+
+		await createApi(fetchFn, "ua", () => " dyn_abc ").fetchOutlook("energa", "g11");
+		await createApi(fetchFn, "ua", () => "").fetchOutlook("energa", "g11");
+
+		expect(new Headers(fn.mock.calls[0][1]?.headers).get("Authorization")).toBe("Bearer dyn_abc");
+		expect(new Headers(fn.mock.calls[1][1]?.headers).has("Authorization")).toBe(false);
+	});
+
 	it("joins today and tomorrow into one list of rows", async () => {
 		const rows = await createApi(fakeFetch(200, outlook).fetchFn).fetchOutlook("energa", "g11");
 
